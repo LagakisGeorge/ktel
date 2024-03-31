@@ -1315,17 +1315,19 @@ Public Class Form1
         Dim ser As JObject = JObject.Parse(json)
         Dim c As String = ""
         Dim SQLDT As New DataTable
+        Execute2SQLQuery("delete from EISITIRIA", SQLDT)
         For K As Integer = 0 To ser("transactions").Count - 1
 
 
             Dim userId As String = ser("transactions")(K)("userId").ToString
             Dim quantity As String = ser("transactions")(K)("quantity").ToString
             Dim fareProductId As String = ser("transactions")(K)("fareProductId").ToString
+            Dim paymentMethodId As String = ser("transactions")(K)("paymentMethodId").ToString
 
-            Execute2SQLQuery("INSERT INTO EISITIRIA( userId,quantity,fareProductId) VALUES (" + userId + "," + quantity + "," + fareProductId + ")", SQLDT)
+            Execute2SQLQuery("INSERT INTO EISITIRIA( userId,quantity,fareProductId,paymentMethodId) VALUES (" + userId + "," + quantity + "," + fareProductId + "," + paymentMethodId + ")", SQLDT)
         Next
 
-
+        MsgBox("OK " + ser("transactions").Count.ToString)
 
 
 
@@ -1336,7 +1338,7 @@ Public Class Form1
         'αν χρησιμοποιώ  byref  tote prepei να δηλωθεί   
         'Dim DTI As New DataTable
         Dim gConnect2 As String = "Provider=SQLOLEDB.1;Data Source=LOGISTIRIO\SQLEXPRESS;Integrated Security=True;database=MERCURY"
-        Dim cn2String As String = "Provider=SQLOLEDB.1;;Password=p@ssw0rd;Persist Security Info=True ;User Id=sa;Initial Catalog=MERCURY;Data Source=LOGISTHRIO\SQLEXPRESS"
+        Dim cn2String As String = "Provider=SQLOLEDB.1;;Password=p@ssw0rd;Persist Security Info=True ;User Id=sa;Initial Catalog=MERCURY;Data Source=LOGISTIRIO\SQLEXPRESS"
         Try
             Dim sqlCon As New OleDbConnection(cn2String)
 
@@ -1406,7 +1408,55 @@ Public Class Form1
 
         Dim json As String = JSONresponseFromServer
         Dim ser As JObject = JObject.Parse(json)
-        Dim data As List(Of JToken) = ser.Children().ToList
+
+        Dim c As String = ""
+        Dim SQLDT As New DataTable
+        Execute2SQLQuery("delete from FareProducts", SQLDT)
+        For K As Integer = 0 To ser("FareProducts").Count - 1
+
+
+            Dim id As String = ser("FareProducts")(K)("id").ToString
+            Dim code As String = ser("FareProducts")(K)("code").ToString
+
+
+
+            Execute2SQLQuery("INSERT INTO FareProducts( id,code) VALUES (" + id + ",'" + code + "' )", SQLDT)
+        Next
+
+
+        Execute2SQLQuery("delete from PaymentMethods", SQLDT)
+        For K As Integer = 0 To ser("PaymentMethods").Count - 1
+
+
+            Dim id As String = ser("PaymentMethods")(K)("id").ToString
+            Dim code As String = ser("PaymentMethods")(K)("code").ToString
+
+
+            Execute2SQLQuery("INSERT INTO PaymentMethods( id,code) VALUES (" + id + ",'" + code + "' )", SQLDT)
+        Next
+
+
+
+
+
+
+
+
+
+
+
+        MsgBox("ok")
+
+
+
+
+
+
+
+
+
+
+        ' Dim data As List(Of JToken) = ser.Children().ToList
 
         'For Each item As JProperty In data
         '    item.CreateReader()
