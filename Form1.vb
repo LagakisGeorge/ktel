@@ -1220,8 +1220,270 @@ Public Class Form1
 
     End Sub
 
+    Private Async Sub Make2RequestKTEL()  ' LOGI
+        Dim client = New HttpClient()
+        Dim queryString = HttpUtility.ParseQueryString(String.Empty)
+
+        ' AYTO XREIAZETAI GIA TA TICKETS
+        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
 
 
+
+        'ΟΚ   Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
+        Dim jsonContent As String = " {""username"":""0"", ""password"": ""==="",""devicesUuid"":""ERP"" }"
+
+        ' Dim jsonContent As String = "{""syncAll"":""0"", ""syncTables"": ""[1,2,3,8,9,10,11,12"",""devicesUuid"":""ERP"",""lastSyncDate"":""null"",""fetchAllUsers"" : ""true"" }"
+
+        Dim content As New StringContent(jsonContent, Encoding.UTF8, "application/json")
+
+        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
+
+
+
+
+
+
+
+
+
+        ' Dim cc As String = InputBox("ΑΠΟ ΠΟΙΟ ΜΑΡΚ ΚΑΙ ΜΕΤΑ;")
+        'queryString("mark") = cc  ' "1000000006337" ' "{string}"
+        '  queryString("nextPartitionKey") = "{string}"
+        '   queryString("nextRowKey") = "{string}"
+
+        Dim uri = "https://drama.amfare.busnet.gr/amfare-admin/web/api/sync_bo"
+
+        Dim response = Await client.PostAsync(uri, content)
+        Dim result = Await response.Content.ReadAsStringAsync()
+        TextBox2.Text = result.ToString
+
+        Dim MF = "c:\txtfiles\apantReqtome.xml"  'Inv" + Format(Now, "yyyyddMMHHmm") + ".xml"
+        FileOpen(1, MF, OpenMode.Output)
+        PrintLine(1, result.ToString)
+        FileClose(1)
+
+
+
+
+
+
+    End Sub
+
+    Private Async Sub Make3RequestKTELtickets()  ' LOGIN USER
+
+        Dim client = New HttpClient()
+        Dim queryString = HttpUtility.ParseQueryString(String.Empty)
+
+        ' AYTO XREIAZETAI GIA TA TICKETS
+        client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "MiJ9.eyJzdWIiOiJhbWNvRXJwVXNlciIsInVzZXJJZCI6IjM1NyIsImNvbW1hU2VwYXJhdGVkQXV0aG9yaXRpZXMiOiJERUxfSElTVE9SWV9SRUNPTkNJTElBVElPTixERUxfUkVDT05DSUxJQVRJT04sRURJVF9ISVNUT1JZX1JFQ09OQ0lMSUFUSU9OLEVESVRfUkVDT05DSUxJQVRJT04sSE9NRSxORVdfSElTVE9SWV9SRUNPTkNJTElBVElPTixORVdfUkVDT05DSUxJQVRJT04sT0JVX0RSSVZFUixWSUVXX0hJU1RPUllfUkVDT05DSUxJQVRJT04sVklFV19SRUNPTkNJTElBVElPTixWSUVXX1VTRVJTLFZJRVdfWl9FVkVOVFMiLCJleHAiOjE3MDYwMjY5NjV9.S6rbSTKpF397NsVdVLfQXJWKZNauh6omo-pyEcmh7hvjgR90UNWX-6bRez_Dj4xetfpwpLMREOJAxbGqObc9eA")
+
+
+
+        'ΟΚ   Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
+        '""deviceUuid"":""ERP"",  
+
+        Dim jsonContent As String = "{  ""carrierId"":108, ""carrierIdentifier"": null,""language"":""el"",""transactionTimestampFrom"":""28/03/2024 00:00:00"",""transactionTimestampTo"" : ""29/03/2024 00:00:00"", ""userId"": [] }"
+
+        Dim content As New StringContent(jsonContent, Encoding.UTF8, "application/json")
+
+        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
+
+
+
+
+
+
+
+
+
+        ' Dim cc As String = InputBox("ΑΠΟ ΠΟΙΟ ΜΑΡΚ ΚΑΙ ΜΕΤΑ;")
+        'queryString("mark") = cc  ' "1000000006337" ' "{string}"
+        '  queryString("nextPartitionKey") = "{string}"
+        '   queryString("nextRowKey") = "{string}"
+
+        Dim uri = "https://drama.amfare.busnet.gr/amfare-admin/web/pub/logistics/get_ticket_transactions" ' "https://drama.amfare.busnet.gr/amfare-admin/web/api/sync_bo"
+
+        Dim response = Await client.PostAsync(uri, content)
+        Dim result = Await response.Content.ReadAsStringAsync()
+        TextBox2.Text = result.ToString
+
+        Dim MF = "c:\txtfiles\ticketsapantReqtome.xml"  'Inv" + Format(Now, "yyyyddMMHHmm") + ".xml"
+        FileOpen(1, MF, OpenMode.Output)
+        PrintLine(1, result.ToString)
+        FileClose(1)
+        Dim json As String = result.ToString
+        Dim ser As JObject = JObject.Parse(json)
+        Dim c As String = ""
+        Dim SQLDT As New DataTable
+        For K As Integer = 0 To ser("transactions").Count - 1
+
+
+            Dim userId As String = ser("transactions")(K)("userId").ToString
+            Dim quantity As String = ser("transactions")(K)("quantity").ToString
+            Dim fareProductId As String = ser("transactions")(K)("fareProductId").ToString
+
+            Execute2SQLQuery("INSERT INTO EISITIRIA( userId,quantity,fareProductId) VALUES (" + userId + "," + quantity + "," + fareProductId + ")", SQLDT)
+        Next
+
+
+
+
+
+
+    End Sub
+
+    Sub Execute2SQLQuery(ByVal SQLQuery As String, ByRef SQLDT As DataTable)
+        'αν χρησιμοποιώ  byref  tote prepei να δηλωθεί   
+        'Dim DTI As New DataTable
+        Dim gConnect2 As String = "Provider=SQLOLEDB.1;Data Source=LOGISTIRIO\SQLEXPRESS;Integrated Security=True;database=MERCURY"
+        Dim cn2String As String = "Provider=SQLOLEDB.1;;Password=p@ssw0rd;Persist Security Info=True ;User Id=sa;Initial Catalog=MERCURY;Data Source=LOGISTHRIO\SQLEXPRESS"
+        Try
+            Dim sqlCon As New OleDbConnection(cn2String)
+
+            Dim sqlDA As New OleDbDataAdapter(SQLQuery, sqlCon)
+
+            Dim sqlCB As New OleDbCommandBuilder(sqlDA)
+            SQLDT.Reset() ' refresh 
+            sqlDA.Fill(SQLDT)
+            ' sqlDA.Fill(sqlDaTaSet, "PEL")
+
+        Catch 'ex As Exception
+            'MsgBox("Error: " & ex.ToString)
+            'If Err.Number = 5 Then
+            '    MsgBox("Invalid Database, Configure TCP/IP", MsgBoxStyle.Exclamation, "Sales and Inventory")
+            'Else
+            '    MsgBox("Error : " & ex.Message)
+            'End If
+            'MsgBox("Error No. " & Err.Number & " Invalid database or no database found !! Adjust settings first", MsgBoxStyle.Critical, "Sales And Inventory")
+            MsgBox(Err.Description + Chr(13) + SQLQuery)
+        End Try
+        'Return sqlDT
+    End Sub
+
+
+
+    Private Async Sub MakeRequestKTEL()
+        Dim client = New HttpClient()
+        Dim queryString = HttpUtility.ParseQueryString(String.Empty)
+
+        ' AYTO XREIAZETAI GIA TA TICKETS
+        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
+
+        Dim JSONresponseFromServer As String
+
+        'ΟΚ   Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
+        Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
+
+        ' Dim jsonContent As String = "{""syncAll"":""0"", ""syncTables"": ""[1,2,3,8,9,10,11,12"",""devicesUuid"":""ERP"",""lastSyncDate"":""null"",""fetchAllUsers"" : ""true"" }"
+
+        Dim content As New StringContent(jsonContent, Encoding.UTF8, "application/json")
+
+        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
+
+
+
+
+
+
+
+
+
+        ' Dim cc As String = InputBox("ΑΠΟ ΠΟΙΟ ΜΑΡΚ ΚΑΙ ΜΕΤΑ;")
+        'queryString("mark") = cc  ' "1000000006337" ' "{string}"
+        '  queryString("nextPartitionKey") = "{string}"
+        '   queryString("nextRowKey") = "{string}"
+
+        Dim uri = "https://drama.amfare.busnet.gr/amfare-admin/web/api/sync_bo"
+
+        Dim response = Await client.PostAsync(uri, content)
+        Dim result = Await response.Content.ReadAsStringAsync()
+        TextBox2.Text = result.ToString
+        JSONresponseFromServer = result.ToString
+        Dim MF = "c:\txtfiles\apantReqtome.xml"  'Inv" + Format(Now, "yyyyddMMHHmm") + ".xml"
+        FileOpen(1, MF, OpenMode.Output)
+        PrintLine(1, result.ToString)
+        FileClose(1)
+
+        Dim json As String = JSONresponseFromServer
+        Dim ser As JObject = JObject.Parse(json)
+        Dim data As List(Of JToken) = ser.Children().ToList
+
+        'For Each item As JProperty In data
+        '    item.CreateReader()
+        '    Select Case item.Name
+        '        Case "Stops" 'each record is inside the entries array
+        '            For Each Entry As JObject In item.Values
+        '                Dim naming As String = Entry("userIdentifier").ToList.Item(0)
+        '                Dim factor As String = Entry("name").ToList.Item(0)
+        '                ' you can continue listing the array items untill you reach the end of you array
+        '                ListBox1.Items.Add(naming + "  " + factor)
+
+
+        '            Next
+        '    End Select
+        'Next
+
+
+
+
+
+
+
+
+
+        'If the Then Json Object item Is Not In an array And you just want the items it returns
+
+        'For Each item As JProperty In data
+        '    item.CreateReader()
+        '    Dim customerId As String = ser("newsyncdate")
+        '    Dim deviceIdAs As String = ser("resp")
+        '    ListBox1.Items.Add(customerId + "==" + deviceIdAs)
+        'Next
+        '***************************  ok ******************************************
+
+        '        ? ser("Stops")(0)("multiLanguageFieldsMap")("STOP_NAME")("en").ToString()
+        '"1st STOP MONASTIRAKI"
+
+        '>?  ser("Stops")(22)("name").ToString()
+        '"ΑΓΙΑ ΕΙΡΗΝΗ"
+
+
+        '>?  ser("Stops").count
+        '531
+        '>>?  ser("Stops")(22).count
+        '10
+        '>
+        '        {
+        '            "multiLanguageFieldsMap": {
+        '                "STOP_NAME": {
+        '                    "el": "1η ΣΤΑΣΗ ΜΟΝΑΣΤΗΡΑΚΙ",
+        '                    "en": "1st STOP MONASTIRAKI"
+        '                }
+        '            },
+        '            "id": 2,
+        '            "longitude": "24.1623965",
+        '            "latitude": "41.1842568",
+        '            "carriersId": 108,
+        '            "userIdentifier": "02610",
+        '            "name": "1η ΣΤΑΣΗ ΜΟΝΑΣΤΗΡΑΚΙ",
+        '            "address": null,
+        '            "phone": null,
+        '            "direction":  "BOTH"
+        '        },
+
+
+        '>?  ser("Stops")(22)("longitude").Tostring
+        '"24.199277"
+
+
+
+
+
+
+
+
+
+    End Sub
 
 
     '        Using System;
@@ -1971,4 +2233,16 @@ Public Class Form1
         End Try
     End Function
 
+    Private Sub Button10_Click(sender As Object, e As EventArgs) Handles Button10.Click
+        MakeRequestKTEL()
+    End Sub
+
+    Private Sub Button11_Click(sender As Object, e As EventArgs) Handles Button11.Click
+        Make2RequestKTEL()
+
+    End Sub
+
+    Private Sub Button12_Click(sender As Object, e As EventArgs) Handles Button12.Click
+        Make3RequestKTELtickets()
+    End Sub
 End Class

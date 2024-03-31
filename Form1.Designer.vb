@@ -43,6 +43,9 @@ Partial Class Form1
         Me.Button8 = New System.Windows.Forms.Button()
         Me.Button9 = New System.Windows.Forms.Button()
         Me.ListBox1 = New System.Windows.Forms.ListBox()
+        Me.Button10 = New System.Windows.Forms.Button()
+        Me.Button11 = New System.Windows.Forms.Button()
+        Me.Button12 = New System.Windows.Forms.Button()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -187,7 +190,7 @@ Partial Class Form1
         'CancInv
         '
         Me.CancInv.BackColor = System.Drawing.Color.Lime
-        Me.CancInv.Location = New System.Drawing.Point(915, 84)
+        Me.CancInv.Location = New System.Drawing.Point(919, 382)
         Me.CancInv.Name = "CancInv"
         Me.CancInv.Size = New System.Drawing.Size(253, 23)
         Me.CancInv.TabIndex = 15
@@ -197,7 +200,7 @@ Partial Class Form1
         'RequestTransmittedDocs
         '
         Me.RequestTransmittedDocs.BackColor = System.Drawing.Color.Lime
-        Me.RequestTransmittedDocs.Location = New System.Drawing.Point(915, 192)
+        Me.RequestTransmittedDocs.Location = New System.Drawing.Point(891, 526)
         Me.RequestTransmittedDocs.Name = "RequestTransmittedDocs"
         Me.RequestTransmittedDocs.Size = New System.Drawing.Size(253, 28)
         Me.RequestTransmittedDocs.TabIndex = 16
@@ -224,7 +227,7 @@ Partial Class Form1
         '
         'Button9
         '
-        Me.Button9.Location = New System.Drawing.Point(957, 134)
+        Me.Button9.Location = New System.Drawing.Point(981, 556)
         Me.Button9.Name = "Button9"
         Me.Button9.Size = New System.Drawing.Size(186, 30)
         Me.Button9.TabIndex = 19
@@ -239,11 +242,41 @@ Partial Class Form1
         Me.ListBox1.Size = New System.Drawing.Size(565, 264)
         Me.ListBox1.TabIndex = 20
         '
+        'Button10
+        '
+        Me.Button10.Location = New System.Drawing.Point(919, 33)
+        Me.Button10.Name = "Button10"
+        Me.Button10.Size = New System.Drawing.Size(249, 23)
+        Me.Button10.TabIndex = 21
+        Me.Button10.Text = "ΚΤΕΛ1"
+        Me.Button10.UseVisualStyleBackColor = True
+        '
+        'Button11
+        '
+        Me.Button11.Location = New System.Drawing.Point(919, 70)
+        Me.Button11.Name = "Button11"
+        Me.Button11.Size = New System.Drawing.Size(249, 23)
+        Me.Button11.TabIndex = 22
+        Me.Button11.Text = "ΚΤΕΛ2 login"
+        Me.Button11.UseVisualStyleBackColor = True
+        '
+        'Button12
+        '
+        Me.Button12.Location = New System.Drawing.Point(919, 121)
+        Me.Button12.Name = "Button12"
+        Me.Button12.Size = New System.Drawing.Size(249, 23)
+        Me.Button12.TabIndex = 23
+        Me.Button12.Text = "get ticket"
+        Me.Button12.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1203, 661)
+        Me.Controls.Add(Me.Button12)
+        Me.Controls.Add(Me.Button11)
+        Me.Controls.Add(Me.Button10)
         Me.Controls.Add(Me.ListBox1)
         Me.Controls.Add(Me.Button9)
         Me.Controls.Add(Me.Button8)
@@ -293,4 +326,7 @@ Partial Class Form1
     Friend WithEvents Button8 As Button
     Friend WithEvents Button9 As Button
     Friend WithEvents ListBox1 As ListBox
+    Friend WithEvents Button10 As Button
+    Friend WithEvents Button11 As Button
+    Friend WithEvents Button12 As Button
 End Class
