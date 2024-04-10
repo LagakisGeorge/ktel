@@ -35,6 +35,8 @@ Partial Class nikosg
         Me.Button3 = New System.Windows.Forms.Button()
         Me.ListBox3 = New System.Windows.Forms.ListBox()
         Me.ListBox4 = New System.Windows.Forms.ListBox()
+        Me.Button4 = New System.Windows.Forms.Button()
+        Me.Button5 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'Button9
@@ -146,11 +148,31 @@ Partial Class nikosg
         Me.ListBox4.Size = New System.Drawing.Size(272, 121)
         Me.ListBox4.TabIndex = 33
         '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(1230, 52)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(153, 26)
+        Me.Button4.TabIndex = 34
+        Me.Button4.Text = "Εκτελεση όλης της Λίστας"
+        Me.Button4.UseVisualStyleBackColor = True
+        '
+        'Button5
+        '
+        Me.Button5.Location = New System.Drawing.Point(836, 1)
+        Me.Button5.Name = "Button5"
+        Me.Button5.Size = New System.Drawing.Size(242, 10)
+        Me.Button5.TabIndex = 35
+        Me.Button5.Text = "φορτωση παραγγελιων http"
+        Me.Button5.UseVisualStyleBackColor = True
+        '
         'nikosg
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1453, 730)
+        Me.Controls.Add(Me.Button5)
+        Me.Controls.Add(Me.Button4)
         Me.Controls.Add(Me.ListBox4)
         Me.Controls.Add(Me.ListBox3)
         Me.Controls.Add(Me.Button3)
@@ -183,4 +205,6 @@ Partial Class nikosg
     Friend WithEvents Button3 As Button
     Friend WithEvents ListBox3 As ListBox
     Friend WithEvents ListBox4 As ListBox
+    Friend WithEvents Button4 As Button
+    Friend WithEvents Button5 As Button
 End Class

@@ -150,6 +150,18 @@ Public Class nikosg
 
             Dim K As Integer
             Dim dts As New DataTable
+
+            'ExecuteSQLQuery("INSERT INTO orders ([order.code]) values ('" + TIMH(1) + "')")
+
+
+
+            ExecuteSQLQuery("select count(*) from orders  where [order.code]='" + TIMH(1) + "'")
+            If sqlDT(0)(0) > 0 Then
+                MsgBox("υπαρχει ηδη")
+                Exit Sub
+            End If
+
+
             Try
                 ExecuteSQLQuery("INSERT INTO orders ([order.code]) values ('" + TIMH(1) + "')")
             Catch ex As Exception
@@ -162,9 +174,51 @@ Public Class nikosg
                 If InStr(PEDIO(K), "customer") > 0 Or InStr(PEDIO(K), "invoice") > 0 Then
                     Try
                         ListBox4.Items.Add(PEDIO(K) + "  " + TIMH(K))
-                        If InStr(PEDIO(K), "order.customer.address.street_number") > 0 Then
-                            TIMH(K) = Mid(TIMH(K), 1, 5)
-                        End If
+                        If InStr(PEDIO(K), "order.customer.address.street_number") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 5)
+                        If InStr(PEDIO(K), "order.state") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 15)
+                        If InStr(PEDIO(K), "order.customer.id") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 15)
+                        If InStr(PEDIO(K), "order.customer.first_name") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 30)
+
+                        If InStr(PEDIO(K), "order.customer.last_name") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 30)
+
+                        If InStr(PEDIO(K), "order.customer.address.street_name") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 30)
+
+                        If InStr(PEDIO(K), "order.customer.address.zip") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 10)
+                        If InStr(PEDIO(K), "order.customer.address.city") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 20)
+
+                        If InStr(PEDIO(K), "order.customer.address.region") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 30)
+
+                        If InStr(PEDIO(K), "order.customer.address.pickup_from_collection_point") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 10)
+
+
+
+
+                        If InStr(PEDIO(K), "order.invoice") > 0 And Len(PEDIO(K)) = Len("order.invoice") Then TIMH(K) = Mid(TIMH(K), 1, 10)
+
+                        If InStr(PEDIO(K), "order.invoice_details.company") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 80)
+                        If InStr(PEDIO(K), "order.invoice_details.profession") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 80)
+
+
+                        If InStr(PEDIO(K), "order.invoice_details.vat_number") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 12)
+
+                        If InStr(PEDIO(K), "order.invoice_details.doy") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 10)
+
+                        If InStr(PEDIO(K), "order.invoice_details.address.street_name") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 30)
+
+
+
+                        If InStr(PEDIO(K), "order.invoice_details.address.street_number") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 10)
+
+
+                        If InStr(PEDIO(K), "order.invoice_details.address.zip") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 10)
+
+
+                        If InStr(PEDIO(K), "order.invoice_details.address.city") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 20)
+
+
+                        If InStr(PEDIO(K), "order.invoice_details.address.region") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 30)
+
+                        If InStr(PEDIO(K), "order.invoice_details.vat_exclusion_requested") > 0 Then TIMH(K) = Mid(TIMH(K), 1, 10)
 
                         ExecuteSQLQuery("update orders Set " + PEDIO(K) + "='" + TIMH(K) + "' where [order.code]='" + TIMH(1) + "'")
 
@@ -225,10 +279,11 @@ Public Class nikosg
         ListBox3.Items.Clear()
         For k As Integer = 0 To sqlDT.Rows.Count - 1
 
+
+
             ListBox3.Items.Add(sqlDT.Rows(k)("kod") + "  κωδ¨:" + sqlDT.Rows(k)("shop_uid"))
 
         Next
-
 
 
 
@@ -252,6 +307,17 @@ Public Class nikosg
         End If
 
         ChromiumWebBrowser1.Load("https://merchants.skroutz.gr/merchants")
+
+
+        ExecuteSQLQuery("select [order.code] as kod,shop_uid from orderdetails")
+        ListBox3.Items.Clear()
+        For k As Integer = 0 To sqlDT.Rows.Count - 1
+
+
+
+            ListBox3.Items.Add(sqlDT.Rows(k)("kod") + "  κωδ¨:" + sqlDT.Rows(k)("shop_uid"))
+
+        Next
 
     End Sub
 
@@ -444,15 +510,22 @@ Public Class nikosg
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
 
-        ' DIABAZEI THN SELIDA
-        '  Dim ts As Task = getSource()
+        ListBox1.Items.Clear()
+        File.Delete(Application.StartupPath + "/currentSource.txt")
 
+        ' DIABAZEI THN SELIDA
+        Dim ts As Task = getSource()
+        Threading.Thread.Sleep(5500)
 
 
         Dim ff As String = Application.StartupPath + "/currentSource.txt"
         '  Exit Sub
         '  MsgBox("OK")
-
+        If File.Exists(ff) Then
+            'ok
+        Else
+            MsgBox("ok")
+        End If
 
         ' Thread.sleep
 
@@ -502,7 +575,7 @@ Public Class nikosg
 
         'ΑΠΟ ΤΟΝ ΠΑΡΑΠΑΝΩ ΠΙΝΑΚΑ ΞΕΧΩΡΙΖΨ ΤΙΣ ΠΑΡΑΓΓΕΛΙΕΣ
         Dim ONO As String, POSO As String
-
+        Dim gglast As String = "" ' gia na mhn bgazei 2 fores to idio
         For k As Integer = 1 To nc
             c = pin(k)
             nn = InStr(c, aa)
@@ -531,9 +604,16 @@ Public Class nikosg
 
 
 
+                    If gglast = gg Then
+
+                        ' einai epanaliψη μην το δειχνεις
+                    Else
+                        ListBox1.Items.Add(gg + " " + ONO + " " + POSO)
+                    End If
 
 
-                    ListBox1.Items.Add(gg + " " + ONO + " " + POSO)
+                    gglast = gg
+
                 End If
             End If
 
@@ -678,9 +758,29 @@ Public Class nikosg
         TextBox2.Lines = lines.ToArray()
     End Sub
 
+    Private Async Function getSourceUTF() As Task
+        Dim source As String = Await ChromiumWebBrowser1.GetBrowser().MainFrame.GetSourceAsync()
+
+        Dim f As String
+        f = Application.StartupPath + "/currentSource.txt"
+
+        Dim wr As StreamWriter = New StreamWriter(f, False, System.Text.Encoding.UTF8)
+        wr.Write(source)
+        wr.Close()
+
+        System.Diagnostics.Process.Start(f)
+
+
+    End Function
+
+
+
+
+
+
     Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
         Dim c As String
-        '  order.Text = Mid(ListBox1.SelectedItem, 1, 14)
+        ''''' order.Text = Mid(ListBox1.SelectedItem, 1, 14)
 
 
 
@@ -699,6 +799,188 @@ Public Class nikosg
 
         Next
 
+
+
+
+    End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        Dim k As Integer = 0
+        For k = 0 To ListBox1.Items.Count - 1
+            order.Text = Mid(ListBox1.Items(k).ToString, 1, 14)
+            SKROUTZ_MakeRequest()
+            Threading.Thread.Sleep(100)
+            Button4.Text = "Εκτέλεση όλων " + Str(k + 1)
+            Threading.Thread.Sleep(100)
+            If k + 1 Mod 10 = 0 Then
+                MsgBox("εκτελεστηκαν " + Str(k + 1))
+            End If
+
+        Next
+        MsgBox("ok εκτελεστηκαν " + Str(K + 1))
+    End Sub
+
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        '  Dim ts As Task = getSource()
+        '  Threading.Thread.Sleep(5500)
+        Dim kod(200) As String
+        Dim pel(200) As String
+        Dim poso(200) As String
+        ListBox1.Items.Clear()
+
+        MsgBox("ok")
+        Dim f As String
+        f = Application.StartupPath + "/currentSource.txt"
+
+
+        If File.Exists(f) Then
+        Else
+            MsgBox("δεν δημιουργηθηκε η σελιδα")
+            Exit Sub
+        End If
+
+        Dim html As String = File.ReadAllText(f, Encoding.Default)
+
+        Dim doc As New HtmlAgilityPack.HtmlDocument()
+        doc.LoadHtml(html)
+
+
+        'Dim nodes As HtmlNode() = doc.DocumentNode.SelectNodes("//a").ToArray()
+
+        'For Each item As HtmlNode In nodes
+        '    ' Console.WriteLine(item.InnerHtml)
+        '    '  ListBox1.Items.Add(item.InnerHtml)   class="cell-content"
+        'Next
+        ' ListBox1.Items.Add("==================== κωδ.παραγγελιας  =============================")
+        ' Dim interestDivs = doc.DocumentNode.SelectNodes("//div[contains(@class,'name')]")  //div[@id='div1']//a
+        Dim k As Integer = 0
+
+
+        Dim nodes2 As HtmlNode() = doc.DocumentNode.SelectNodes("//div[@class='cell-content']//a").ToArray()
+
+        Try
+
+
+
+            If Not nodes2 Is Nothing Then
+                For Each item As HtmlNode In nodes2
+                    k = k + 1
+                    kod(k) = item.InnerHtml
+                    ' ListBox1.Items.Add()
+                Next
+            End If
+        Catch ex As Exception
+            'next
+        End Try
+
+
+
+
+
+        Try
+
+
+            Dim nodes22 As HtmlNode() = doc.DocumentNode.SelectNodes("//td[@class='cell-code']//a").ToArray()
+
+            If Not nodes22 Is Nothing Then
+                For Each item As HtmlNode In nodes22
+                    k = k + 1
+                    kod(k) = item.InnerHtml
+                    ' ListBox1.Items.Add()
+                Next
+            End If
+        Catch ex As Exception
+            MsgBox("Αδυνατη η φόρτωση")
+            Exit Sub
+        End Try
+
+
+
+        ListBox1.Items.Add("=====dt ===Πελατης  Επωνυμο=========================================")
+
+        ' If doc.DocumentNode.SelectNodes("//dd").Count > 0 Then  <div class="cell info"
+        Try
+
+            k = 0
+            Dim nodes3 As HtmlNode() = doc.DocumentNode.SelectNodes("//div[@class='cell info']//span").ToArray()
+            For Each item As HtmlNode In nodes3
+                If InStr(item.InnerHtml, "Πελάτης") = 0 Then
+                    k = k + 1
+                    pel(k) = item.InnerHtml
+                    'ListBox1.Items.Add(item.InnerHtml)
+                End If
+
+            Next
+            '  End If
+        Catch ex As Exception
+
+        End Try
+
+
+        'class="cell-product">
+        k = 0
+        ListBox1.Items.Add("=====money=====================================")
+        Dim nodes4 As HtmlNode() = doc.DocumentNode.SelectNodes("//td[@class='cell money']//div").ToArray()
+        If Not nodes4 Is Nothing Then
+            For Each item As HtmlNode In nodes4
+                Dim nn As Integer = InStr(item.InnerHtml, "Ποσό</span>")
+                If nn > 0 Then
+                    k = k + 1
+                    poso(k) = Mid(item.InnerHtml, nn + 36, 10)
+                    '  Console.WriteLine(item.InnerHtml)
+                    ' ListBox1.Items.Add(item.InnerHtml)
+                End If
+
+            Next
+        End If
+
+        For l As Integer = 1 To k
+            ListBox1.Items.Add(kod(l) + " " + Mid(pel(l) + Space(40), 1, 40) + " " + Mid(poso(l) + Space(10), 1, 10))
+
+        Next
+
+
+
+        Return
+
+
+
+
+
+
+
+
+
+
+
+        ListBox1.Items.Add("=====barcode ============================================")
+        Dim nodes5 As HtmlNode() = doc.DocumentNode.SelectNodes("//td[@class='cell-product']//div").ToArray()
+        If Not nodes5 Is Nothing Then
+            For Each item As HtmlNode In nodes5
+                ListBox1.Items.Add(item.InnerHtml)
+            Next
+        End If
+
+        '<td class="cell-quantity">
+        '           <span>1 ×</span>
+        '      </td>
+
+        ListBox1.Items.Add("=====class=======================================")
+        Dim nodes6 As HtmlNode() = doc.DocumentNode.SelectNodes("//td[@class='cell-quantity']//span").ToArray()
+        If Not nodes6 Is Nothing Then
+            For Each item As HtmlNode In nodes6
+                ListBox1.Items.Add(item.InnerHtml)
+            Next
+        End If
+
+
+        ListBox1.Items.Add("=====timh============================================")
+        Dim nodes7 As HtmlNode() = doc.DocumentNode.SelectNodes("//td[@class='cell-money']").ToArray()
+        If Not nodes7 Is Nothing Then
+            For Each item As HtmlNode In nodes7
+                ListBox1.Items.Add(item.InnerHtml)
+            Next
+        End If
 
 
 
