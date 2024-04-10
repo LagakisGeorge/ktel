@@ -1282,13 +1282,17 @@ Public Class Form1
         'ΟΚ   Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
         '""deviceUuid"":""ERP"",  
 
-        Dim jsonContent As String = "{  ""carrierId"":108, ""carrierIdentifier"": null,""language"":""el"",""transactionTimestampFrom"":""28/03/2024 00:00:00"",""transactionTimestampTo"" : ""29/03/2024 00:00:00"", ""userId"": [] }"
+        Dim jsonContent As String = "{  ""carrierId"":108, ""carrierIdentifier"": null,""language"":""el"",""transactionTimestampFrom"":""30/03/2024 00:00:00"",""transactionTimestampTo"" : ""31/03/2024 00:00:00"", ""userId"": [] }"
 
         Dim content As New StringContent(jsonContent, Encoding.UTF8, "application/json")
 
         'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
 
-
+        '        Select Case U.lastname,F.code ,S.revenue/100 As TIMH,* 
+        ' From [EISITIRIA] S 
+        ' INNER Join Users U on S.userId=U.id 
+        ' INNER Join FareProducts F on S.fareProductId=F.id 
+        ' where userId = 9
 
 
 
@@ -1323,12 +1327,22 @@ Public Class Form1
             Dim quantity As String = ser("transactions")(K)("quantity").ToString
             Dim fareProductId As String = ser("transactions")(K)("fareProductId").ToString
             Dim paymentMethodId As String = ser("transactions")(K)("paymentMethodId").ToString
+            'cissueDateTimestamp
+            Dim cissueDateTimestamp As String = ser("transactions")(K)("issueDateTimestamp").ToString
+            Dim deviceUuid As String = ser("transactions")(K)("deviceUuid").ToString
+            Dim userUuid As String = ser("transactions")(K)("userUuid").ToString
 
-            Execute2SQLQuery("INSERT INTO EISITIRIA( userId,quantity,fareProductId,paymentMethodId) VALUES (" + userId + "," + quantity + "," + fareProductId + "," + paymentMethodId + ")", SQLDT)
+            Dim revenue As String = ser("transactions")(K)("revenue").ToString
+            Dim totalRevenue As String = ser("transactions")(K)("totalRevenue").ToString
+            '
+            Execute2SQLQuery("INSERT INTO EISITIRIA(userUuid, deviceUuid,cissueDateTimestamp,userId,quantity,fareProductId,paymentMethodId,revenue,totalRevenue) VALUES ('" + userUuid + "','" + deviceUuid + "','" + cissueDateTimestamp + "'," + userId + "," + quantity + "," + fareProductId + "," + paymentMethodId + "," + revenue + "," + totalRevenue + ")", SQLDT)
         Next
 
         MsgBox("OK " + ser("transactions").Count.ToString)
 
+        'xreiazomai hmeromhnia ,kvdiko eidoys,kodiko pelTH,ΑΡΙΘΜΟ ΠΑΡΑΣΤΑΤΙΚΟΥ
+        'insert into EGGTIM (HME,ATIM,EIDOS,TIMM,PELKOD,KODE,POSO)   select '03/26/2024' AS HME,'T000122' AS ATIM,'e' as e,SUM(revenue/100) as r,userId,fareProductId,quantity from EISITIRIA where userId=9 group by userId,fareProductId,quantity
+        ' insert into TIM (HME,ATIM,EIDOS,AJI,KPE,KLEIDI)  select '03/26/2024' AS HME,'T000122' AS ATIM,'e' as e,SUM(revenue/100) as r,'USER' AS AA,'T000122' AS ATIM2 from EISITIRIA where userId=9 
 
 
 
@@ -1374,7 +1388,7 @@ Public Class Form1
         Dim JSONresponseFromServer As String
 
         'ΟΚ   Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
-        Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
+        Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12,13],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
 
         ' Dim jsonContent As String = "{""syncAll"":""0"", ""syncTables"": ""[1,2,3,8,9,10,11,12"",""devicesUuid"":""ERP"",""lastSyncDate"":""null"",""fetchAllUsers"" : ""true"" }"
 
@@ -1436,8 +1450,83 @@ Public Class Form1
         Next
 
 
+        '       "firstname" [nvarchar](50) NULL,
+        '"lastname" [nvarchar](50) NULL,
+        '"username" [nvarchar](50) NULL,
+        '"uuid" [nvarchar](50) NULL,
+        '"email" [nvarchar](50) NULL,
+
+        '{
+        '    "id": 37,
+        '    "username": "077809",
+        '    "password": "$2a$10$4fhrrehADIFCbpsUD9bC7eNU2yyawbUslk2IoOyac0emZpObTBSqi",
+        '    "salt": null,
+        '    "confirmPassword": null,
+        '    "email":  "user077809@nomail.com",
+        '    "uuid": "1f247151-5046-4b55-9291-2d40d072f81c",
+        '    "mobile": "69077809",
+        '    "firstname": "ΣΤΥΛΙΑΝΟΣ",
+        '    "lastname": "ΧΑΤΖΗΙΩΑΝΝΙΔΗΣ",
+        '    "status": "ACTIVE",
+        '    "userRoleList": [
+        '        {
+        '            "userId": 37,
+        '            "roleId": 20,
+        '            "enabled": true,
+        '            "roleName": "DRIVER"
+        '        }
+        '    ],
+        '    "statuses": null,
+        '    "userRoleStrToDisplay": null,
+        '    "isAdmin":  false,
+        '    "carriersId": 108,
+        '    "thirdPartiesId": null,
+        '    "thirdPartyUserId": null,
+        '    "enabled":  "1",
+        '    "activationUrlKey": null,
+        '    "activationPin": null,
+        '    "rfId":  "",
+        '    "isSuperAdmin": 0,
+        '    "litId": 0,
+        '    "fathersName": "",
+        '    "logisticsCodeAxia": "",
+        '    "logisticsCodeAxiaParcel": "",
+        '    "logisticsCodeSum": "",
+        '    "logisticsCodeFpa": "",
+        '    "logisticsCodeFpaParcel": "",
+        '    "logisticsCodePayroll": "",
+        '    "isDriver": true,
+        '    "isPosUser": false,
+        '    "maxZAmount": null,
+        '    "debt": null,
+        '    "serialNumber": null,
+        '    "exceededAllowedDebt":  false,
+        '    "exceededMaxZAmount": false,
+        '    "relatedDeviceId": null,
+        '    "admin":  false,
+        '    "logisticsCodeCommission": ""
+        '},
 
 
+
+
+
+
+
+        Execute2SQLQuery("delete from Users", SQLDT)
+        For K As Integer = 0 To ser("Users").Count - 1
+
+
+            Dim firstname As String = ser("Users")(K)("firstname").ToString
+
+            Dim id As String = ser("Users")(K)("id").ToString
+            Dim lastname As String = ser("Users")(K)("lastname").ToString
+            Dim username As String = ser("Users")(K)("username").ToString
+            Dim uuid As String = ser("Users")(K)("uuid").ToString
+            Dim email As String = ser("Users")(K)("email").ToString
+
+            Execute2SQLQuery("INSERT INTO Users( id,firstname,lastname,username,uuid,email) VALUES (" + id + ",'" + firstname + "','" + lastname + "','" + username + "','" + uuid + "','" + email + "' )", SQLDT)
+        Next
 
 
 
@@ -2294,5 +2383,60 @@ Public Class Form1
 
     Private Sub Button12_Click(sender As Object, e As EventArgs) Handles Button12.Click
         Make3RequestKTELtickets()
+    End Sub
+
+    Private Sub tickToParastat_Click(sender As Object, e As EventArgs) Handles tickToParastat.Click
+        'xreiazomai hmeromhnia ,kvdiko eidoys,kodiko pelTH,ΑΡΙΘΜΟ ΠΑΡΑΣΤΑΤΙΚΟΥ
+        '  insert into EGGTIM (HME,ATIM,EIDOS,TIMM,PELKOD,KODE,POSO)   select '03/26/2024' AS HME,'T000122' AS ATIM,'e' as e,SUM(revenue/100) as r,userId,fareProductId,quantity from EISITIRIA where userId=9 group by userId,fareProductId,quantity
+        '  insert into TIM (HME,ATIM,EIDOS,AJI,KPE,KLEIDI)  select '03/26/2024' AS HME,'T000122' AS ATIM,'e' as e,SUM(revenue/100) as r,'USER' AS AA,'T000122' AS ATIM2 from EISITIRIA where userId=9 
+
+        ' METATREPV TIS HMEROMHNIES
+        Dim SQLDT As New DataTable
+        Execute2SQLQuery("UPDATE EISITIRIA SET [issueDateTimestamp]=CONVERT(DATETIME,[cissueDateTimestamp],103)", SQLDT)
+
+        UPDATE_ATIM()
+
+        ' Execute2SQLQuery("UPDATE EISITIRIA SET ATIM=", SQLDT)
+
+
+
+
+
+    End Sub
+    Sub UPDATE_ATIM()
+        Dim DT As New DataTable
+        Dim muserId = -1
+        Dim mAtim = "0000000"
+        Execute2SQLQuery("SELECT * FROM EISITIRIA ORDER BY userId", DT)
+        For K As Integer = 0 To DT.Rows.Count - 1
+            Dim userId As Integer = DT.Rows(K)("userId")
+            Dim ID As Integer = DT.Rows(K)("ID")
+
+            If userId <> muserId Then
+                muserId = userId
+
+                Dim l As String = "C" ' ("ABCDEFGHIJKLMNOPQRSTUVWYXZ").Substring(userID, 1)
+
+                Dim DT3 As New DataTable
+                Execute2SQLQuery("UPDATE ARITMISI SET ARITMISI=ARITMISI+1 WHERE ID=55", DT3) ' + Str(50 + userID
+
+                Dim DT2 As New DataTable
+                Execute2SQLQuery("SELECT ARITMISI FROM ARITMISI WHERE ID=55", DT2)  ' + Str(50 + userID
+                Dim NN As Integer = DT2(0)(0)
+
+                mAtim = l + Format(NN, "000000")
+            End If
+            Dim DT22 As New DataTable
+            Execute2SQLQuery("UPDATE EISITIRIA SET ATIM='" + mAtim + "' WHERE ID=" + Str(ID), DT22)
+
+
+
+
+
+        Next
+
+        MsgBox("ok")
+
+
     End Sub
 End Class

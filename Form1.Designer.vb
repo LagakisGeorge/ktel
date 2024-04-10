@@ -46,6 +46,7 @@ Partial Class Form1
         Me.Button10 = New System.Windows.Forms.Button()
         Me.Button11 = New System.Windows.Forms.Button()
         Me.Button12 = New System.Windows.Forms.Button()
+        Me.tickToParastat = New System.Windows.Forms.Button()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -209,7 +210,7 @@ Partial Class Form1
         '
         'Button7
         '
-        Me.Button7.Location = New System.Drawing.Point(919, 232)
+        Me.Button7.Location = New System.Drawing.Point(896, 611)
         Me.Button7.Name = "Button7"
         Me.Button7.Size = New System.Drawing.Size(248, 23)
         Me.Button7.TabIndex = 17
@@ -269,11 +270,21 @@ Partial Class Form1
         Me.Button12.Text = "get ticket"
         Me.Button12.UseVisualStyleBackColor = True
         '
+        'tickToParastat
+        '
+        Me.tickToParastat.Location = New System.Drawing.Point(921, 174)
+        Me.tickToParastat.Name = "tickToParastat"
+        Me.tickToParastat.Size = New System.Drawing.Size(251, 23)
+        Me.tickToParastat.TabIndex = 24
+        Me.tickToParastat.Text = "ΕΙΣΙΤΗΡΙΑ->ΠΑΡΑΣΤΑΤΙΚΑ"
+        Me.tickToParastat.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1203, 661)
+        Me.Controls.Add(Me.tickToParastat)
         Me.Controls.Add(Me.Button12)
         Me.Controls.Add(Me.Button11)
         Me.Controls.Add(Me.Button10)
@@ -329,4 +340,5 @@ Partial Class Form1
     Friend WithEvents Button10 As Button
     Friend WithEvents Button11 As Button
     Friend WithEvents Button12 As Button
+    Friend WithEvents tickToParastat As Button
 End Class
