@@ -13,6 +13,10 @@ Imports Newtonsoft.Json
 
 
 Imports Newtonsoft.Json.Linq
+Imports CefSharp.DevTools.DOM
+Imports CefSharp.Enums
+Imports System.Drawing.Drawing2D
+Imports System.Globalization
 
 
 'Imports System.Net.Http.Headers
@@ -42,7 +46,7 @@ Public Class Form1
     Public gUserId As String
     Public gSubKey As String
 
-
+    Public fbearer As String
 
 
 
@@ -1282,7 +1286,7 @@ Public Class Form1
         'ΟΚ   Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
         '""deviceUuid"":""ERP"",  
 
-        Dim jsonContent As String = "{  ""carrierId"":108, ""carrierIdentifier"": null,""language"":""el"",""transactionTimestampFrom"":""30/03/2024 00:00:00"",""transactionTimestampTo"" : ""31/03/2024 00:00:00"", ""userId"": [] }"
+        Dim jsonContent As String = "{  ""carrierId"":108, ""carrierIdentifier"": null,""language"":""el"",""transactionTimestampFrom"":""28/03/2024 00:00:00"",""transactionTimestampTo"" : ""29/03/2024 00:00:00"", ""userId"": [] }"
 
         Dim content As New StringContent(jsonContent, Encoding.UTF8, "application/json")
 
@@ -2091,7 +2095,7 @@ Public Class Form1
             While reader.Read
                 If reader.Value IsNot Nothing Then
 
-                  
+
                     If InStr(reader.Path, reader.Value) = 0 Then
                         ListBox1.Items.Add(reader.Path + "=" + reader.Value.ToString)
                         PrintLine(1, reader.Path + "=" + reader.Value.ToString)
@@ -2392,12 +2396,47 @@ Public Class Form1
 
         ' METATREPV TIS HMEROMHNIES
         Dim SQLDT As New DataTable
-        Execute2SQLQuery("UPDATE EISITIRIA SET [issueDateTimestamp]=CONVERT(DATETIME,[cissueDateTimestamp],103)", SQLDT)
+        Execute2SQLQuery("UPDATE EISITIRIA SET [issueDateTimestamp]=CONVERT(DATE,[cissueDateTimestamp],103)", SQLDT)
+
+
+        Dim SQL55 As New DataTable
+        Execute2SQLQuery("SELECT userId from  EISITIRIA where userId not in (SELECT NUM1 FROM PEL )", SQL55)
+        Dim s55ektos As String = ""
+        For n55 As Integer = 0 To SQL55.Rows.Count - 1
+            s55ektos = s55ektos + SQL55.Rows(0)(0).ToString + " , "
+        Next
+        If s55ektos = "" Then
+        Else
+            MsgBox("σεν εχω αντιστοιχία για πελατες:" + s55ektos)
+        End If
+
+
+
+        Execute2SQLQuery("SELECT fareProductId from  EISITIRIA where fareProductId not in (SELECT NUM1 FROM EID )", SQL55)
+        s55ektos = ""
+        For n55 As Integer = 0 To SQL55.Rows.Count - 1
+            s55ektos = s55ektos + SQL55.Rows(0)(0).ToString + " , "
+        Next
+        If s55ektos = "" Then
+        Else
+            MsgBox("σεν εχω αντιστοιχία για ΕΙΣΙΤΗΡΙΑ:" + s55ektos)
+        End If
+
+
+
+
+
+
+
+        Execute2SQLQuery("UPDATE EISITIRIA SET PELKOD=(SELECT top 1 KOD FROM PEL WHERE NUM1=userId)", SQLDT)
+        Execute2SQLQuery("UPDATE EISITIRIA SET KODE=(SELECT top 1 KOD FROM EID WHERE NUM1=fareProductId )", SQLDT)
 
         UPDATE_ATIM()
 
-        ' Execute2SQLQuery("UPDATE EISITIRIA SET ATIM=", SQLDT)
+        Execute2SQLQuery("delete from EGGTIMTEMP", SQLDT)
 
+        Execute2SQLQuery(" insert into EGGTIMTEMP (TIMM, EIDOS, MONA, MIK_AJIA, POSO, PELKOD, ATIM, KODE, HME   ) SELECT (revenue/100/1.13) as timm,'e','TEM',SUM(totalRevenue/100) as axia, SUM(quantity) as aritmos,PELKOD,ATIM,KODE,convert(date,[issueDateTimestamp]) FROM EISITIRIA GROUP BY PELKOD,ATIM,KODE,convert(date,[issueDateTimestamp]),(revenue/100/1.13)", SQLDT)
+        'SELECT SUM(POSO*TIMM) AS AJ1 ,ATIM,PELKOD,HME   FROM [MERCURY].[dbo].[EGGTIMTEMP] GROUP BY ATIM,PELKOD,HME
 
 
 
@@ -2439,4 +2478,497 @@ Public Class Form1
 
 
     End Sub
+
+    Private Sub Button13_Click(sender As Object, e As EventArgs) Handles Button13.Click
+        REQPAROCHOS()
+
+    End Sub
+
+    Async Sub REQPAROCHOS()
+
+
+        Dim client = New HttpClient()
+        Dim queryString = HttpUtility.ParseQueryString(String.Empty)
+
+        ' AYTO XREIAZETAI GIA TA TICKETS
+        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
+
+
+
+
+
+
+
+        'ok    Dim jsonContent As String = " {""username"":""glagakis@gmail.com"", ""email"":""glagakis@gmail.com"",""password"": ""y39213921!!Y"",""subscriptionKey"":""32657FD7929B483AABBD1C633401E945"" }"
+
+
+
+        Dim memail As String
+        Dim jsonContent As String = " {""username"":""" + memail + """, ""email"":""glagakis@gmail.com"",""password"": ""y39213921!!Y"",""subscriptionKey"":""32657FD7929B483AABBD1C633401E945"" }"
+
+
+
+
+        ' Dim jsonContent As String = "{""syncAll"":""0"", ""syncTables"": ""[1,2,3,8,9,10,11,12"",""devicesUuid"":""ERP"",""lastSyncDate"":""null"",""fetchAllUsers"" : ""true"" }"
+
+        Dim content As New StringContent(jsonContent, Encoding.UTF8, "application/json")
+
+        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
+
+
+
+
+
+
+
+
+
+        ' Dim cc As String = InputBox("ΑΠΟ ΠΟΙΟ ΜΑΡΚ ΚΑΙ ΜΕΤΑ;")
+        'queryString("mark") = cc  ' "1000000006337" ' "{string}"
+        '  queryString("nextPartitionKey") = "{string}"
+        '   queryString("nextRowKey") = "{string}"
+
+        Dim uri = "https://beta-account.parochos.gr/api/account/loginToSubscription"
+
+        Dim response = Await client.PostAsync(uri, content)
+        Dim result = Await response.Content.ReadAsStringAsync()
+        TextBox2.Text = result.ToString
+
+        Dim MF = "c:\txtfiles\apantPAROCHOS.xml"  'Inv" + Format(Now, "yyyyddMMHHmm") + ".xml"
+        FileOpen(1, MF, OpenMode.Output)
+        PrintLine(1, result.ToString)
+        FileClose(1)
+
+
+        Dim json As String = result.ToString
+        Dim ser As JObject = JObject.Parse(json)
+        Dim c As String = ""
+
+        '  For K As Integer = 0 To ser("jwt").Count - 1
+
+
+        fbearer = ser("jwt").ToString
+
+        '    Next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        '' VB.NET1
+
+        'Dim vm = New JArray()
+
+        '' foreach(var cycle In cycles)
+        ''{
+        ''JObject.FromObject(cycle);
+        ''   // extend cycleJson ......
+
+
+
+
+        'Dim cycleJson = JObject.FromObject(
+        '   New With {
+        '        Key .name = "Jeff",
+        '        Key .id = 1,
+        '        Key .car = "BMW"
+        '    }
+        ').ToString()
+
+        'vm.Add(cycleJson)
+
+
+
+
+        'Dim cycleJson2 = JObject.Parse("{""name"":""john""}")
+
+        ''//add surname
+        'cycleJson2("surname") = "doe"
+
+        ''//add a complex object
+        'cycleJson2("complexObj") = JObject.FromObject(New With
+        '                                              {
+        '                                              Key .id = 1,
+        '                                              Key .Name = "test"}
+        '                                              )
+        ''So the final json will be
+
+        ''{
+        ''  "name": "john",
+        ''  "surname": "doe",
+        ''  "complexObj": {
+        ''    "id": 1,
+        ''    "name": "test"
+        ''  }
+        ''}
+
+        'vm.Add(cycleJson2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    End Sub
+
+    Private Sub Button14_Click(sender As Object, e As EventArgs) Handles Button14.Click
+        sendtimol
+        End Sub
+    Async Sub sendtimol()
+
+
+        Dim iss As New Issuer
+        iss.vatNumber = "028783755"
+        iss.branch = 0
+        iss.street = "Κ.ΠΑΛΑΙΟΛΟΓΟΥ"
+        iss.streetNumber = "21"
+        iss.postalCode = "66100" '       "postalCode": "postalCode",
+        iss.city = "ΔΡΑΜΑ" '       "city": "city",
+        iss.country = "GR" '       "country": "GR"
+
+
+
+
+
+
+        Dim cou As New Counterpart
+        cou.vatNumber = "150144455"
+        cou.name = "ΛΑΓΑΚΗΣ ΠΑΡΑΣΚΕΥΑΣ"
+        cou.branch = 0
+        cou.street = "ΣΑΜΑΚΟΒΙΟΥ"
+        cou.streetNumber = "13"
+        cou.postalCode = "66100" '       "postalCode": "postalCode",
+        cou.city = "ΔΡΑΜΑ" '       "city": "city",
+        cou.country = "GR" '
+        cou.email = "test@email.com" '
+
+
+        Dim deliv As New DeliveryAddress
+        deliv.street = "ΣΑΜΑΚΟΒΙΟΥ "
+        deliv.streetNumber = "13"
+        deliv.postalCode = "66100" '       "postalCode": "postalCode",
+        deliv.city = "ΔΡΑΜΑ" '       "city": "city",
+        deliv.country = "GR" '
+
+        '  Dim det(10) As InvoiceDetail
+        Dim newitem(10) As InvoiceDetail
+
+        newitem(0) = New InvoiceDetail()
+        newitem(0).lineNumber = 1
+        newitem(0).entityName = "KARIDIA"
+        'newitem(0).recType = Null
+        newitem(0).invoiceDetailType = 0
+        newitem(0).quantity = 1
+        newitem(0).netValue = 100
+        newitem(0).vatCategory = 1
+        newitem(0).vatCategoryUbl = "S"
+        newitem(0).vatAmount = 24
+        newitem(0).vatPercent = 24
+        newitem(0).measurementUnit = 1
+        newitem(0).measurementUnitUbl = "H87"
+        newitem(0).lineComments = "ΣΧΟΛΙΑ"
+
+        newitem(0).totalValue = 124
+        newitem(0).classificationCategory = "category1_1"
+        newitem(0).classificationType = "E3_561_001"
+        newitem(0).cpvCode = "45233222-1"
+
+
+
+        newitem(1) = New InvoiceDetail()
+        newitem(1).lineNumber = 2
+        newitem(1).entityName = "KARIDIA"
+        'newitem(1).recType = Null
+        newitem(1).invoiceDetailType = 0
+        newitem(1).quantity = 1
+        newitem(1).netValue = 100
+        newitem(1).vatCategory = 1
+        newitem(1).vatCategoryUbl = "S"
+        newitem(1).vatAmount = 24
+        newitem(1).vatPercent = 24
+        newitem(1).measurementUnit = 1
+        newitem(1).measurementUnitUbl = "H87"
+        newitem(1).lineComments = "ΣΧΟΛΙΑ"
+
+        newitem(1).totalValue = 124
+        newitem(1).classificationCategory = "category1_1"
+        newitem(1).classificationType = "E3_561_001"
+        newitem(1).cpvCode = "45233222-1"
+
+        Dim pay(5) As PaymentMethod
+
+        pay(0) = New PaymentMethod()
+        pay(0).type = 5
+        pay(0).amount = 248
+
+
+
+
+
+        Dim he As New InvoiceHeader
+        he.series = "b"
+        he.issueDate = "2024-04-17"
+        he.dispatchDate = "2024-04-17"
+        he.aa = 204
+        he.invoiceCode = "INV000204"
+        he.invoiceTypeUbl = "380"
+        he.invoiceType = "1.1"
+        he.currency = "EUR"
+        he.movePurpose = 1
+        he.selfPricing = False
+
+        he.fuelInvoice = False
+
+
+
+
+        Dim invs As New InvoiceSummary
+
+        invs.totalVatAmount = 48.0
+        invs.totalValue = 248.0
+        invs.totalNetValue = 200.0
+
+
+
+
+
+        Dim inv As New Invoice
+        inv.issuer = iss
+        inv.counterpart = cou
+        inv.invoiceHeader = he
+        inv.invoiceDetails.Add(newitem(0))
+        inv.invoiceDetails.Add(newitem(1))
+        inv.paymentMethods.add(pay(0))
+        inv.invoiceSummary = invs
+        inv.deliveryAddress = deliv
+        inv.invoiceSummary = invs
+
+
+
+
+        Dim SOU As New Source2
+        SOU.invoice = inv
+
+        Dim ex2 As New Example
+        ex2.externalSystemId = "187"
+        ex2.source = SOU
+
+        Dim ResultJSON As String = JsonConvert.SerializeObject(ex2).ToString
+        Debug.Print(ResultJSON) '
+
+        '  Exit Sub
+
+
+
+
+
+        Dim client = New HttpClient()
+        Dim queryString = HttpUtility.ParseQueryString(String.Empty)
+
+
+
+        Dim ResultJSON12 As String = " { ""externalSystemId"" : ""185"",  ""source"": {
+        ""invoice"": {
+            ""issuer"": {
+                ""vatNumber"": ""028783755"",
+                ""branch"": 0,
+                ""street"": ""street"",
+                ""streetNumber"": ""streetNumber"",
+                ""postalCode"": ""postalCode"",
+                ""city"": ""city"",
+                ""country"": ""GR""
+            },
+            ""counterpart"": {
+                ""vatNumber"": ""028783755"",
+                ""branch"": 0,
+                ""name"": ""name"",
+                ""street"": ""street"",
+                ""streetNumber"": ""streetNumber"",
+                ""postalCode"": ""postalCode"",
+                ""city"": ""city"",
+                ""country"": ""GR"",
+                ""email"": ""test@email.com""
+            },
+            ""representative"": {
+                ""vatNumber"": ""000000000"",
+                ""name"": ""name""
+            },
+            ""deliveryAddress"": {
+                ""street"": ""street"",
+                ""streetNumber"": ""streetNumber"",
+                ""postalCode"": ""postalCode"",
+                ""city"": ""city"",
+                ""country"": ""GR""
+            },
+           
+            ""invoiceHeader"": {
+                ""series"": ""INV"",
+                ""aa"": 13,
+                ""issueDate"": ""2024-04-14"",                
+                ""dispatchDate"": ""2024-04-14"",
+                ""invoiceCode"": ""INV-00013"",
+                ""invoiceType"": ""1.1"",
+                ""invoiceTypeUbl"": ""380"",
+                ""currency"": ""EUR"",
+                ""selfPricing"": false,
+                ""movePurpose"": 1,
+                ""fuelInvoice"": false
+            },
+            ""invoiceDetails"": [
+                {
+                    ""lineNumber"": 1,
+                    ""recType"": 1,
+                    ""quantity"": 1,
+                    ""entityName"": ""string"",
+                    ""invoiceDetailType"": 0,
+                    ""netValue"": 100,
+                    ""totalValue"": 124,
+                    ""vatCategory"":  ""24"", 
+                   
+                  
+                    ""vatAmount"": 24,
+                    ""vatPercent"": 24,
+                    ""measurementUnit"": ""H87"",
+                    ""measurementUnitUbl"": ""H87"",
+                    ""lineComments"": ""ΣΧΟΛΙΑ"",
+                    ""classificationCategory"": ""category1_1"",
+                    ""classificationType"": ""E3_561_1"",
+                   
+                    ""cpvCode"": ""45233222-1""
+                   
+                }
+            ],
+           
+            ""paymentMethods"": [
+                {
+                    ""type"": 5,
+                    ""amount"": 124
+                }
+            ],
+           
+            ""invoiceSummary"": {
+                ""totalNetValue"": 100,
+                ""totalVatAmount"": 24,
+                ""totalValue"": 124
+            },
+            ""Messages"": [
+                {
+                    ""type"": 0,
+                    ""recipients"": ""test1@email.com;test2@email.com"",
+                    ""cc"": ""test3@email.com;test4@email.com"",
+                    ""templateIdentifier"": ""0000001""
+                },
+                {
+                    ""type"": 1,
+                    ""recipients"": ""6983022568;6983022868""
+                }
+            ]
+        }
+    }
+}"
+
+
+
+        '""taxInfo"": {
+        '               ""taxCategory"": 1,
+        '               ""taxCategoryUbl"": ""50"",
+        '               ""underlyingValue"": 100,
+        '               ""taxPercent"": 20
+        '           }
+
+        ' AYTO XREIAZETAI GIA TA TICKETS
+        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
+
+        '=========================================================================================
+
+        'ΟΚ   Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
+        'Dim jsonContent As String = "{""+ ResultJSON2+"" }" ' " {""externalSystemId"":""185"", ""source"" : """ + ResultJSON + """ }"
+        Dim jsonContent As String = ResultJSON ' " {""externa
+
+
+
+        ' Dim jsonContent As String = "{""syncAll"":""0"", ""syncTables"": ""[1,2,3,8,9,10,11,12"",""devicesUuid"":""ERP"",""lastSyncDate"":""null"",""fetchAllUsers"" : ""true"" }"
+
+        Dim content As New StringContent(jsonContent, Encoding.UTF8, "application/json")
+
+        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
+
+
+        client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", fbearer)
+
+
+
+
+
+
+
+
+        ' Dim cc As String = InputBox("ΑΠΟ ΠΟΙΟ ΜΑΡΚ ΚΑΙ ΜΕΤΑ;")
+        'queryString("mark") = cc  ' "1000000006337" ' "{string}"
+        '  queryString("nextPartitionKey") = "{string}"
+        '   queryString("nextRowKey") = "{string}"
+
+        Dim uri = "https://beta-srv.parochos.gr/api/send"
+
+        Dim response = Await client.PostAsync(uri, content)
+        Dim result = Await response.Content.ReadAsStringAsync()
+        TextBox2.Text = result.ToString
+
+
+        ' Exit Sub
+
+        Dim MF = "c:\txtfiles\apanttimPAROCHOS.xml"  'Inv" + Format(Now, "yyyyddMMHHmm") + ".xml"
+        FileOpen(1, MF, OpenMode.Output)
+        PrintLine(1, result.ToString)
+        FileClose(1)
+
+
+        Dim json As String = result.ToString
+        Dim ser As JObject = JObject.Parse(json)
+        Dim c As String = ""
+
+        ' For K As Integer = 0 To ser("jwt").Count - 1
+
+
+        '  fbearer = ser("jwt")(K)("userId").ToString
+
+        ' Next
+
+
+
+
+
+
+
+
+
+
+    End Sub
 End Class
+
+
+
+
+
