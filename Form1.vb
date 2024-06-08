@@ -17,6 +17,7 @@ Imports CefSharp.DevTools.DOM
 Imports CefSharp.Enums
 Imports System.Drawing.Drawing2D
 Imports System.Globalization
+Imports Microsoft.VisualBasic.ApplicationServices
 
 
 'Imports System.Net.Http.Headers
@@ -1286,7 +1287,7 @@ Public Class Form1
         'ΟΚ   Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
         '""deviceUuid"":""ERP"",  
 
-        Dim jsonContent As String = "{  ""carrierId"":108, ""carrierIdentifier"": null,""language"":""el"",""transactionTimestampFrom"":""28/03/2024 00:00:00"",""transactionTimestampTo"" : ""29/03/2024 00:00:00"", ""userId"": [] }"
+        Dim jsonContent As String = "{  ""carrierId"":108, ""carrierIdentifier"": null,""language"":""el"",""transactionTimestampFrom"":""07/06/2024 00:00:00"",""transactionTimestampTo"" : ""07/06/2024 22:00:00"", ""userId"": [] }"
 
         Dim content As New StringContent(jsonContent, Encoding.UTF8, "application/json")
 
@@ -1355,7 +1356,7 @@ Public Class Form1
     Sub Execute2SQLQuery(ByVal SQLQuery As String, ByRef SQLDT As DataTable)
         'αν χρησιμοποιώ  byref  tote prepei να δηλωθεί   
         'Dim DTI As New DataTable
-        Dim gConnect2 As String = "Provider=SQLOLEDB.1;Data Source=LOGISTIRIO\SQLEXPRESS;Integrated Security=True;database=MERCURY"
+        ' Dim gConnect2 As String = "Provider=SQLOLEDB.1;Data Source=LOGISTIRIO\SQLEXPRESS;Integrated Security=True;database=MERCURY"
         Dim cn2String As String = "Provider=SQLOLEDB.1;;Password=p@ssw0rd;Persist Security Info=True ;User Id=sa;Initial Catalog=MERCURY;Data Source=LOGISTIRIO\SQLEXPRESS"
         Try
             Dim sqlCon As New OleDbConnection(cn2String)
@@ -2400,28 +2401,39 @@ Public Class Form1
 
 
         Dim SQL55 As New DataTable
-        Execute2SQLQuery("SELECT userId from  EISITIRIA where userId not in (SELECT NUM1 FROM PEL )", SQL55)
+        ' ΔΕΝ ΠΑΙΖΕΙ Execute2SQLQuery("SELECT userId from  EISITIRIA where userId not in (SELECT NUM1 FROM PEL )", SQL55)
+        Execute2SQLQuery(" Select  userId,P.NUM1,P.EPO from  EISITIRIA E
+                       Left Join PEL P ON  E.userId=P.NUM1
+                       where P.NUM1 Is NULL", SQL55)
+        Dim probl As Integer = 0
+
         Dim s55ektos As String = ""
-        For n55 As Integer = 0 To SQL55.Rows.Count - 1
-            s55ektos = s55ektos + SQL55.Rows(0)(0).ToString + " , "
-        Next
-        If s55ektos = "" Then
-        Else
+            For n55 As Integer = 0 To SQL55.Rows.Count - 1
+                s55ektos = s55ektos + SQL55.Rows(0)(0).ToString + " , "
+            Next
+            If s55ektos = "" Then
+            Else
             MsgBox("σεν εχω αντιστοιχία για πελατες:" + s55ektos)
+            probl = probl + 1
         End If
 
 
 
-        Execute2SQLQuery("SELECT fareProductId from  EISITIRIA where fareProductId not in (SELECT NUM1 FROM EID )", SQL55)
+        ' Execute2SQLQuery("SELECT fareProductId from  EISITIRIA where fareProductId not in (SELECT NUM1 FROM EID )", SQL55)
+        Execute2SQLQuery("SELECT fareProductId from  EISITIRIA S LEFT JOIN EID D ON S.fareProductId=D.NUM1 WHERE D.NUM1 IS NULL", SQL55)
         s55ektos = ""
-        For n55 As Integer = 0 To SQL55.Rows.Count - 1
-            s55ektos = s55ektos + SQL55.Rows(0)(0).ToString + " , "
-        Next
-        If s55ektos = "" Then
-        Else
+            For n55 As Integer = 0 To SQL55.Rows.Count - 1
+                s55ektos = s55ektos + SQL55.Rows(0)(0).ToString + " , "
+            Next
+            If s55ektos = "" Then
+            Else
             MsgBox("σεν εχω αντιστοιχία για ΕΙΣΙΤΗΡΙΑ:" + s55ektos)
+            probl = probl + 1
         End If
-
+        If probl > 0 Then
+            MsgBox("αδυνατη η συνεχιση")
+            Exit Sub
+        End If
 
 
 
@@ -2429,13 +2441,11 @@ Public Class Form1
 
 
         Execute2SQLQuery("UPDATE EISITIRIA SET PELKOD=(SELECT top 1 KOD FROM PEL WHERE NUM1=userId)", SQLDT)
-        Execute2SQLQuery("UPDATE EISITIRIA SET KODE=(SELECT top 1 KOD FROM EID WHERE NUM1=fareProductId )", SQLDT)
+            Execute2SQLQuery("UPDATE EISITIRIA SET KODE=(SELECT top 1 KOD FROM EID WHERE NUM1=fareProductId )", SQLDT)
+            UPDATE_ATIM()
+            Execute2SQLQuery("delete from EGGTIMTEMP", SQLDT)
 
-        UPDATE_ATIM()
-
-        Execute2SQLQuery("delete from EGGTIMTEMP", SQLDT)
-
-        Execute2SQLQuery(" insert into EGGTIMTEMP (TIMM, EIDOS, MONA, MIK_AJIA, POSO, PELKOD, ATIM, KODE, HME   ) SELECT (revenue/100/1.13) as timm,'e','TEM',SUM(totalRevenue/100) as axia, SUM(quantity) as aritmos,PELKOD,ATIM,KODE,convert(date,[issueDateTimestamp]) FROM EISITIRIA GROUP BY PELKOD,ATIM,KODE,convert(date,[issueDateTimestamp]),(revenue/100/1.13)", SQLDT)
+            Execute2SQLQuery(" insert into EGGTIMTEMP (TIMM, EIDOS, MONA, MIK_AJIA, POSO, PELKOD, ATIM, KODE, HME   ) SELECT (revenue/100/1.13) as timm,'e','TEM',SUM(totalRevenue/100) as axia, SUM(quantity) as aritmos,PELKOD,ATIM,KODE,convert(date,[issueDateTimestamp]) FROM EISITIRIA GROUP BY PELKOD,ATIM,KODE,convert(date,[issueDateTimestamp]),(revenue/100/1.13)", SQLDT)
         'SELECT SUM(POSO*TIMM) AS AJ1 ,ATIM,PELKOD,HME   FROM [MERCURY].[dbo].[EGGTIMTEMP] GROUP BY ATIM,PELKOD,HME
 
 
@@ -2634,8 +2644,8 @@ Public Class Form1
     End Sub
 
     Private Sub Button14_Click(sender As Object, e As EventArgs) Handles Button14.Click
-        sendtimol
-        End Sub
+        sendtimol()
+    End Sub
     Async Sub sendtimol()
 
 
@@ -2760,7 +2770,7 @@ Public Class Form1
         inv.invoiceHeader = he
         inv.invoiceDetails.Add(newitem(0))
         inv.invoiceDetails.Add(newitem(1))
-        inv.paymentMethods.add(pay(0))
+        inv.paymentMethods.Add(pay(0))
         inv.invoiceSummary = invs
         inv.deliveryAddress = deliv
         inv.invoiceSummary = invs
