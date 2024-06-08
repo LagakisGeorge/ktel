@@ -47,6 +47,9 @@ Partial Class Form1
         Me.Button11 = New System.Windows.Forms.Button()
         Me.Button12 = New System.Windows.Forms.Button()
         Me.tickToParastat = New System.Windows.Forms.Button()
+        Me.Button13 = New System.Windows.Forms.Button()
+        Me.Button14 = New System.Windows.Forms.Button()
+        Me.Button15 = New System.Windows.Forms.Button()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -160,9 +163,9 @@ Partial Class Form1
         'Button4
         '
         Me.Button4.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.Button4.Location = New System.Drawing.Point(915, 4)
+        Me.Button4.Location = New System.Drawing.Point(919, 4)
         Me.Button4.Name = "Button4"
-        Me.Button4.Size = New System.Drawing.Size(253, 23)
+        Me.Button4.Size = New System.Drawing.Size(252, 28)
         Me.Button4.TabIndex = 12
         Me.Button4.Text = "ΤΙΜΟΛΟΓΗΣΕΙΣ ΠΡΟΣ ΕΜΑΣ"
         Me.Button4.UseVisualStyleBackColor = False
@@ -247,7 +250,7 @@ Partial Class Form1
         '
         Me.Button10.Location = New System.Drawing.Point(919, 33)
         Me.Button10.Name = "Button10"
-        Me.Button10.Size = New System.Drawing.Size(249, 23)
+        Me.Button10.Size = New System.Drawing.Size(252, 28)
         Me.Button10.TabIndex = 21
         Me.Button10.Text = "ΚΤΕΛ1"
         Me.Button10.UseVisualStyleBackColor = True
@@ -256,7 +259,7 @@ Partial Class Form1
         '
         Me.Button11.Location = New System.Drawing.Point(919, 70)
         Me.Button11.Name = "Button11"
-        Me.Button11.Size = New System.Drawing.Size(249, 23)
+        Me.Button11.Size = New System.Drawing.Size(252, 28)
         Me.Button11.TabIndex = 22
         Me.Button11.Text = "ΚΤΕΛ2 login"
         Me.Button11.UseVisualStyleBackColor = True
@@ -265,25 +268,55 @@ Partial Class Form1
         '
         Me.Button12.Location = New System.Drawing.Point(919, 121)
         Me.Button12.Name = "Button12"
-        Me.Button12.Size = New System.Drawing.Size(249, 23)
+        Me.Button12.Size = New System.Drawing.Size(252, 28)
         Me.Button12.TabIndex = 23
         Me.Button12.Text = "get ticket"
         Me.Button12.UseVisualStyleBackColor = True
         '
         'tickToParastat
         '
-        Me.tickToParastat.Location = New System.Drawing.Point(921, 174)
+        Me.tickToParastat.Location = New System.Drawing.Point(919, 174)
         Me.tickToParastat.Name = "tickToParastat"
-        Me.tickToParastat.Size = New System.Drawing.Size(251, 23)
+        Me.tickToParastat.Size = New System.Drawing.Size(252, 28)
         Me.tickToParastat.TabIndex = 24
         Me.tickToParastat.Text = "ΕΙΣΙΤΗΡΙΑ->ΠΑΡΑΣΤΑΤΙΚΑ"
         Me.tickToParastat.UseVisualStyleBackColor = True
+        '
+        'Button13
+        '
+        Me.Button13.Location = New System.Drawing.Point(920, 208)
+        Me.Button13.Name = "Button13"
+        Me.Button13.Size = New System.Drawing.Size(252, 28)
+        Me.Button13.TabIndex = 25
+        Me.Button13.Text = "PAROXOS ΛΟΓΙΝ"
+        Me.Button13.UseVisualStyleBackColor = True
+        '
+        'Button14
+        '
+        Me.Button14.Location = New System.Drawing.Point(920, 242)
+        Me.Button14.Name = "Button14"
+        Me.Button14.Size = New System.Drawing.Size(252, 28)
+        Me.Button14.TabIndex = 26
+        Me.Button14.Text = "Jinvoice"
+        Me.Button14.UseVisualStyleBackColor = True
+        '
+        'Button15
+        '
+        Me.Button15.Location = New System.Drawing.Point(880, 352)
+        Me.Button15.Name = "Button15"
+        Me.Button15.Size = New System.Drawing.Size(263, 30)
+        Me.Button15.TabIndex = 27
+        Me.Button15.Text = "forologikos"
+        Me.Button15.UseVisualStyleBackColor = True
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1203, 661)
+        Me.Controls.Add(Me.Button15)
+        Me.Controls.Add(Me.Button14)
+        Me.Controls.Add(Me.Button13)
         Me.Controls.Add(Me.tickToParastat)
         Me.Controls.Add(Me.Button12)
         Me.Controls.Add(Me.Button11)
@@ -341,4 +374,7 @@ Partial Class Form1
     Friend WithEvents Button11 As Button
     Friend WithEvents Button12 As Button
     Friend WithEvents tickToParastat As Button
+    Friend WithEvents Button13 As Button
+    Friend WithEvents Button14 As Button
+    Friend WithEvents Button15 As Button
 End Class

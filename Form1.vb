@@ -2898,18 +2898,11 @@ Public Class Form1
         '               ""taxPercent"": 20
         '           }
 
-        ' AYTO XREIAZETAI GIA TA TICKETS
-        'client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "YOUR_ACCESS_TOKEN")
-
-        '=========================================================================================
-
-        'ΟΚ   Dim jsonContent As String = " {""syncAll"":0, ""syncTables"": [1,2,3,8,9,10,11,12],""devicesUuid"":""ERP"",""lastSyncDate"":null,""fetchAllUsers"" : true }"
-        'Dim jsonContent As String = "{""+ ResultJSON2+"" }" ' " {""externalSystemId"":""185"", ""source"" : """ + ResultJSON + """ }"
         Dim jsonContent As String = ResultJSON ' " {""externa
 
 
 
-        ' Dim jsonContent As String = "{""syncAll"":""0"", ""syncTables"": ""[1,2,3,8,9,10,11,12"",""devicesUuid"":""ERP"",""lastSyncDate"":""null"",""fetchAllUsers"" : ""true"" }"
+
 
         Dim content As New StringContent(jsonContent, Encoding.UTF8, "application/json")
 
@@ -2964,6 +2957,32 @@ Public Class Form1
 
 
 
+
+    End Sub
+
+    Private Sub Button15_Click(sender As Object, e As EventArgs) Handles Button15.Click
+        forol()
+    End Sub
+    Private Async Sub forol()
+
+        Dim client = New HttpClient()
+        Dim queryString = HttpUtility.ParseQueryString(String.Empty)
+        ' client.DefaultRequestHeaders.Add("aade-user-id", gUserId)
+        '  client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", gSubKey)
+        '  Dim cc As String = InputBox("ΑΠΟ ΠΟΙΟ ΜΑΡΚ ΚΑΙ ΜΕΤΑ;")
+        '  queryString("mark") = cc  ' "1000000006337" ' "{string}"
+        '  queryString("nextPartitionKey") = "{string}"
+        '   queryString("nextRowKey") = "{string}"
+        Dim uri = "http://localhost:11180/webservice/checkreceipt?recno=000008&format=xml" ' "https://mydata-dev.azure-api.net/RequestDocs?" & queryString.ToString
+
+        Dim response = Await client.GetAsync(uri)
+        Dim result = Await response.Content.ReadAsStringAsync()
+        TextBox2.Text = result.ToString
+
+        Dim MF = "c:\txtfiles\apantforolReqtome.xml"  'Inv" + Format(Now, "yyyyddMMHHmm") + ".xml"
+        FileOpen(1, MF, OpenMode.Output)
+        PrintLine(1, result.ToString)
+        FileClose(1)
 
     End Sub
 End Class
